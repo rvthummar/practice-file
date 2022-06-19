@@ -21,3 +21,24 @@ SELECT org_id AS orgId, COUNT(org_id) AS orgCount FROM edu GROUP BY org_id
 UNION ALL
 SELECT org_id AS orgId, COUNT(org_id)  AS orgCount FROM agri GROUP BY org_id ) tmp 
 INNER JOIN bank_master bm ON bm.id= tmp.orgId GROUP BY tmp.orgId
+
+-- day month
+SELECT  tmp.gbday, SUM(tmp.approvedCount) AS approvedCount, SUM(tmp.sanctionCount) AS sanctionCount FROM(
+	SELECT 
+	DAY(j_date) gbday,
+	SUM(CASE WHEN proposal_id =1 THEN 1 ELSE 0 END) approvedCount,
+	0 AS sanctionCount
+	FROM `practice`.`agri` GROUP BY DAY(j_date) 
+	UNION ALL
+	SELECT 
+	DAY(m_date) gbday,
+	0 AS approvedCount,
+	SUM(CASE WHEN proposal_id =2 THEN 1 ELSE 0 END) AS sanctionCount
+	FROM `practice`.`agri` GROUP BY DAY(m_date)
+) tmp GROUP BY tmp.gbday ORDER BY tmp.gbday;
+--- or query
+SELECT 
+IF(proposal_id =1, DAY(j_date), DAY(m_date)) gbday,
+SUM(CASE WHEN proposal_id =1 THEN 1 ELSE 0 END) approvedCount,
+SUM(CASE WHEN proposal_id = 2 THEN 1 ELSE 0 END) AS sanctionCount
+FROM `practice`.`agri` GROUP BY DAY(IF(proposal_id =1,j_date,m_date)) ORDER BY gbday
