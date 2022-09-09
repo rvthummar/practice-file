@@ -42,3 +42,5 @@ IF(proposal_id =1, DAY(j_date), DAY(m_date)) gbday,
 SUM(CASE WHEN proposal_id =1 THEN 1 ELSE 0 END) approvedCount,
 SUM(CASE WHEN proposal_id = 2 THEN 1 ELSE 0 END) AS sanctionCount
 FROM `practice`.`agri` GROUP BY DAY(IF(proposal_id =1,j_date,m_date)) ORDER BY gbday
+
+https://www.w3schools.com/mysql/mysql_ref_functions.asp
